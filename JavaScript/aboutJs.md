@@ -201,3 +201,6 @@ bgChange();
 3. 태그 분석이 끝나면 외부 스타일 시트나 문서 안의 스타일 정보를 분석하면서 화면에 표시
 4. <script> 태그를 만나면 자바 스크립트 해걱기로 스크립트 소스를 넘김. 내부 스크립트면 태그 사이의 소스를 해석하고, 외부 파일이 연결되어있으면 외부 파일의 소스를 해석
 5. 스크립트 파일이 실행되어 문서의 배경색이 바뀜
+<img width="1006" alt="image" src="https://github.com/user-attachments/assets/a7ff1f40-995a-41d3-9ae4-fbbd35abaa84" />
+
+![image](https://github.com/user-attachments/assets/f727a4b4-8abb-4a1c-90fa-9b2fac9476f6)
