@@ -1,0 +1,28 @@
+/*
+TODO: Modify this stylesheet so that the appearance of the images meets the following criteria:
+- Each image should be 120px tall
+- Each image should have a 20px antiquewhite mat between the images and the frame
+- Each image should have a solid black frame with a width of 10px.
+- There should be 10px of space around the frame
+In the end, you should have what resembles a gallery of framed paintings, as in `sample-output.png`!
+*/
+
+img {
+    height: 120px;
+    background-color: antiquewhite;
+    padding: 10px;
+    border: 10px solid black;
+    border-style: solid;
+    border-width: 10px;
+    border-color: black;
+    margin: 10px;
+
+   /*
+    height: 120px; 
+   border: 20px solid antiquewhite;
+   outline: 10px solid black;
+   margin: 30px;
+   */
+}
+
+

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script>
+        // let a =5;
+        // console.log(a);
+
+        function bmi (weight, height) {
+            return weight / (height * height);
+        }
+
+        const person1 = {
+            weight : 58,
+            height : 1.70
+        }
+
+        const person2 = {
+            weight : 78.8,
+            height : 1.75
+        }
+
+        let people = [person1, person2];
+
+        people.forEach(function(p){
+            const result = bmi(p.weight, p.height);
+            console.log('BMI: ${result}');
+        })
+
+    </script>
+    <title>HTML</title>
+</head>
+<body>
+    
+</body>
+</html>

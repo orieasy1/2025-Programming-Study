@@ -1,0 +1,14 @@
+#collage {
+    padding: 20px;
+    height: 300px;
+    width: 300px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    border: 3px solid black;
+}
+
+#collage img{
+    height: 100px;
+}
