@@ -11,8 +11,6 @@ app = FastAPI()
 
 # 웹캠 연결
 cap = cv2.VideoCapture(0)
-
-# 카메라 설정
 cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
 
 # 녹화 설정
@@ -21,17 +19,22 @@ frame_rate = 30
 is_recording = False
 last_frame = None
 no_change_counter = 0
-no_change_limit = frame_rate * 3  # 3초 이상 변화 없으면 종료
+no_change_limit = frame_rate * 3
 lock = threading.Lock()
 
 # 이벤트 감지용
-pre_event_frames = deque(maxlen=frame_rate * 3)  # 이벤트 발생 전 3초치 프레임 저장
-post_event_frames = frame_rate * 3  # 이벤트 종료 후 3초 추가 녹화
+pre_event_frames = deque(maxlen=frame_rate * 6)  # 3초 전 + 2초 지속 + 1초 여유
+post_event_frames = frame_rate * 3
 
 # 히트맵 설정
 motion_heatmap = None
-heatmap_threshold = 255 * 1000  # 변화가 일정 수준 이상 누적될 때
-decay_rate = 0.9  # 히트맵 감소 비율
+heatmap_threshold = 255 * 1000
+decay_rate = 0.9
+
+# 지속적 변화 감지용
+motion_duration_counter = 0
+motion_trigger_min_duration = frame_rate * 2  # 2초 연속 변화 필요
+record_ready = False
 
 # 저장 디렉토리 설정
 SAVE_DIR = "recorded_videos"
@@ -55,16 +58,11 @@ def detect_changes(frame):
 
     last_frame = gray_frame
 
-    # 히트맵 누적
     motion_heatmap = motion_heatmap * decay_rate + threshold_diff.astype(np.float32)
     heat_score = np.sum(motion_heatmap)
 
-    # 디버그용 출력 (원한다면 주석 제거)
-    # print(f"Heat Score: {heat_score:.2f}")
-
     return heat_score > heatmap_threshold
 
-# 녹화 시작 함수 (이전 프레임도 함께 저장)
 def start_recording():
     global video_writer, is_recording
     filename = os.path.join(SAVE_DIR, f"event_{time.strftime('%Y%m%d_%H%M%S')}.mp4")
@@ -83,10 +81,16 @@ def start_recording():
         is_recording = True
         print(f"녹화 시작: {filename}")
 
-        while pre_event_frames:
-            video_writer.write(pre_event_frames.popleft())
+        if len(pre_event_frames) >= frame_rate * 5:
+            buffer_list = list(pre_event_frames)[-frame_rate * 5:]  # 마지막 5초
+        else:
+            buffer_list = list(pre_event_frames)
 
-# 녹화 종료 함수 (종료 후 3초 추가 녹화)
+        for frame in buffer_list:
+            video_writer.write(frame)
+
+
+# 녹화 종료 함수
 def stop_recording():
     global video_writer, is_recording
     with lock:
@@ -105,30 +109,49 @@ def stop_recording():
 
 # 영상 스트리밍 및 녹화 처리
 def generate_frames():
-    global is_recording, no_change_counter
+    global is_recording, no_change_counter, motion_duration_counter, record_ready
 
     while True:
         ret, frame = cap.read()
         if not ret:
             break
 
-        pre_event_frames.append(frame)
+        pre_event_frames.append(frame.copy())
 
-        if detect_changes(frame):
-            no_change_counter = 0
-            if not is_recording:
+        change_detected = detect_changes(frame)
+
+        # 히트맵 시각화
+        heatmap_display = cv2.convertScaleAbs(motion_heatmap)
+        colored_heatmap = cv2.applyColorMap(heatmap_display, cv2.COLORMAP_JET)
+        combined = cv2.hconcat([frame, colored_heatmap])
+
+        if change_detected:
+            motion_duration_counter += 1
+
+            if not is_recording and motion_duration_counter >= motion_trigger_min_duration:
+                record_ready = True
+
+            if record_ready:
                 start_recording()
+                record_ready = False
 
-            with lock:
-                if video_writer:
+            if is_recording:
+                with lock:
                     video_writer.write(frame)
+
+            no_change_counter = 0
         else:
+            if not is_recording:
+                motion_duration_counter = 0
+                record_ready = False
             if is_recording:
                 no_change_counter += 1
+                with lock:
+                    video_writer.write(frame)
                 if no_change_counter > no_change_limit:
                     stop_recording()
 
-        _, buffer = cv2.imencode('.jpg', frame)
+        _, buffer = cv2.imencode('.jpg', combined)
         frame = buffer.tobytes()
         yield (b'--frame\r\n'
                b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n\r\n')
@@ -144,11 +167,11 @@ async def get():
     html_content = """
     <html>
         <head>
-            <title>Live Stream</title>
+            <title>Live Stream with Heatmap</title>
         </head>
         <body>
-            <h1>Live Stream</h1>
-            <img src="/video" width="400">
+            <h1>Live Stream + Heatmap</h1>
+            <img src="/video" width="800">
         </body>
     </html>
     """
