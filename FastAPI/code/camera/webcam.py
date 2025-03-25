@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse
-from mycamera import get_captured_picture
+from FastAPI.code.camera.mycamera import get_captured_picture
 
 app = FastAPI()
 
