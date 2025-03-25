@@ -29,7 +29,7 @@ motion_heatmap = None # 변화가 누적되는 이미지
 heatmap_threshold = 255 * 1000 # 이벤트 발생 기준값, 더 커야 이벤트로 감지됨됨
 decay_rate = 0.9 # 히트맵 감쇠율
 
-# 모션 지속 체크용 변수수 
+# 모션 지속 체크용 변수
 motion_duration_counter = 0 # 변화가 지속된 프레임 수
 motion_trigger_min_duration = frame_rate * 2 # 2초 이상 지속 시 이벤트 감지
 motion_start_time = None
