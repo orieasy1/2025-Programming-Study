@@ -12,10 +12,13 @@ app = FastAPI()
 # 웹캠 연결
 cap = cv2.VideoCapture(0)
 cap.set(cv2.CAP_PROP_BUFFERSIZE, 1)
+cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+cap.set(cv2.CAP_PROP_FPS, 5)
 
 # 녹화 설정
 video_writer = None
-frame_rate = 30
+frame_rate = 5
 is_recording = False
 last_frame = None
 lock = threading.Lock()
