@@ -1,11 +1,56 @@
 from fastapi import FastAPI
 from fastapi.responses import StreamingResponse, HTMLResponse
-import cv2
-import threading
-import time
-import os
+import cv2, os, threading, time, json, threading, atexit, psutil
 import numpy as np
 from collections import deque
+
+#-------CPU 모니터링---------
+cpu_samples = []  # {"time": ..., "cpu": ...} 형태를 저장할 리스트
+start_time = time.time()
+
+def monitor_cpu():
+    while True:
+        # 1초 간격으로 CPU 사용률을 측정
+        usage = psutil.cpu_percent(interval=1.0)
+        elapsed = time.time() - start_time
+        cpu_samples.append({"time": elapsed, "cpu": usage})
+
+threading.Thread(target=monitor_cpu, daemon=True).start()
+
+@atexit.register
+def save_cpu_log():
+    elapsed_time = time.time() - start_time  # 총 실행 시간(초)
+   
+    if len(cpu_samples) > 0:
+        # 모든 cpu 값 합계
+        total_cpu_usage = sum(sample["cpu"] for sample in cpu_samples)
+        # "cpu 값 모두 더한 것 ÷ 실행 시간(초)" --> 사용자 요청대로 구간 평균
+        average_cpu_usage = total_cpu_usage / elapsed_time
+
+        # 가장 높았던/낮았던 CPU 사용률
+        max_cpu_usage = max(sample["cpu"] for sample in cpu_samples)
+        min_cpu_usage = min(sample["cpu"] for sample in cpu_samples)
+    else:
+        # 샘플이 한 개도 없을 경우(프로그램이 매우 빨리 종료될 때) 대비
+        average_cpu_usage = 0
+        max_cpu_usage = 0
+        min_cpu_usage = 0
+        total_cpu_usage = 0
+
+    # 최종으로 JSON에 저장할 데이터 구조 (샘플 목록은 제외)
+    result_data = {
+        "elapsed_time_seconds": elapsed_time,
+        "average_cpu_usage": average_cpu_usage,  # 전체 구간 평균
+        "max_cpu_usage": max_cpu_usage,          # 최고 CPU
+        "min_cpu_usage": min_cpu_usage,           # 최저 CPU
+        "total_cpu_usage" : total_cpu_usage
+    }
+
+    # cpu_usage_log.json 파일로 저장
+    with open("cpu_usage_log.json", "w") as f:
+        json.dump(result_data, f, indent=4)
+
+# --------------------------------------------------------------
 
 app = FastAPI()
 
