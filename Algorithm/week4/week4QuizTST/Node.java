@@ -1,5 +1,3 @@
-package Ternary;
-
 public class Node {
 	char data; 
     boolean isEndOfString; 

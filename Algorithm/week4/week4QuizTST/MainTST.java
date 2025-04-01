@@ -1,5 +1,3 @@
-package Ternary;
-
 public class MainTST {
 	public static void main(String[] args) {
 		TSTree t = new TSTree();

@@ -1,5 +1,3 @@
-package Ternary;
-
 public class TSTree {
 	Node root = new Node(' ');
 	public Node insert(String word)    {
