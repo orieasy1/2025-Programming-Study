@@ -1,0 +1,25 @@
+body {
+    font-family: Arial, sans-serif;
+    padding: 20px;
+  }
+  #controls {
+    margin-bottom: 20px;
+  }
+  #pokedex {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;    
+  }
+  .pokemon-card {
+    border: 1.5px solid red;
+    padding: 10px;
+    border-radius: 10px;
+    text-align: center;
+    width: 180px;
+    cursor: url("https://cdn.custom-cursor.com/db/250/32/arrow2282.png"), pointer;
+    box-shadow: 2px 2px 6px rgba(0,0,0,0.1);
+  }
+  .pokemon-card img {
+    width: 100px;
+    cursor: url("https://cdn.custom-cursor.com/db/249/32/arrow2282.png"), pointer;
+  }
