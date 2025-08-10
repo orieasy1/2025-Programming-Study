@@ -1,0 +1,76 @@
+  
+  /* Overall page styling */
+  body {
+    font-family: 'Arial', sans-serif;
+    line-height: 1.6;
+    background: linear-gradient(45deg, #1e3c72, #2a5298);
+    color: #fff;
+    padding: 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap:10px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  /* Container to hold page content */
+  .container {
+    width: 100%;
+    max-width: 800px;
+    background-color: rgba(0, 0, 0, 0.65);
+    border-radius: 10px;
+    padding: 30px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+
+  }
+
+  #key-container{
+    gap:5px;
+  }
+
+  .clue2 {
+    background-color: rgba(184, 174, 243, 0.65);
+    border: 1px solid white;
+    padding: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Header styling */
+  h1 {
+    text-align: center;
+    font-size: 2.2rem;
+    margin-bottom: 20px;
+    color: #ffcc00; 
+  }
+  
+  /* Paragraph and list styling */
+  p, ol, li {
+    font-size: 1.1rem;
+    margin-bottom: 10px;
+  }
+  
+  /* Ordered list adjustments */
+  ol {
+    margin-left: 20px;
+  }
+  
+  /* Style for the button */
+  button {
+    display: block;
+    width: 100%;
+    padding: 15px;
+    margin-top: 20px;
+    font-size: 1.2rem;
+    background-color: #ffcc00;
+    color: #1e3c72;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  button:hover {
+    background-color: #e6b800;
+  }
+  
