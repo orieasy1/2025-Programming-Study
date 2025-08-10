@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Flight Details</title>
+</head>
+<body>
+  <h1>Flight Info</h1>
+  <div id="flight-info"></div>
+
+  <h2>Passengers</h2>
+  <ul id="passenger-list"></ul>
+
+  <a href="flights.html">See all flights</a>
+
+  <script>
+    const params = new URLSearchParams(location.search);
+    const flightId = params.get('id');
+
+    fetch(`/api/flights/${flightId}`)
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById('flight-info').textContent =
+          `${data.origin} → ${data.destination} (${data.duration} min)`;
+
+        const ul = document.getElementById('passenger-list');
+        data.passengers.forEach(p => {
+          const li = document.createElement('li');
+          li.textContent = `${p.first} ${p.last}`;
+          ul.appendChild(li);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading flight details:', err);
+        alert('Could not load flight info.');
+      });
+  </script>
+</body>
+</html>

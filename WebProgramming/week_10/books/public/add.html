@@ -1,40 +1,54 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Add Book</title>
 </head>
+
 <body>
-    <h1>Add a New Book</h1>
+    <h1>Add Book</h1>
+
+    <!-- 책을 추가하기 위한 입력 폼 id = "addBook"을 통해 JS에서 접근 가능-->
     <form id="addBook">
-        <label for="title">Title:</label>
-        <input type="text" id="title" name="title" placeholder="Title" required>
-        <br>
-        <label for="author">Author:</label>
-        <input type="text" id="author" name="author" placeholder="Author" required>
-        <br>
-        <button type="submit">save</button>
+        <!-- 제목과 저자를 입력받는 필드, required: 값을 반드시 입력해야 함 -->
+        <input type="text" name="title" placeholder="Title" required>
+        <input type="text" name="author" placeholder="Author" required>
+        <button>Save</button>
     </form>
 
-    <a href="../index.html">See list of books</a>
+    <!-- 책 목록으로 돌아가는 링크 -->
+    <a href="index.html">See list of books</a>
 
     <script>
         //add.html
+        // addBook 폼이 제출되면 실행되는 함수
         document.getElementById('addBook').onsubmit = e => {
-            e.preventDefault();
-            const form = e.target;
+            // 이벤트 객체 e를 통해 폼 제출 이벤트를 처리
+            // e는 이벤트 발생 시 자동으로 전달되는 정보
+            e.preventDefault(); // 폼 제출의 기본 동작을 막음 (페이지 새로고침 방지)
+            // 폼이 제출되면 브라우저는 기본적으로 페이지를 새로고침하는데 이를 막는 것
+            
+            // e.target은 이벤트가 발생한 요소, 여기서는 폼 요소를 의미
+            const form = e.target; // 이벤트 객체에서 폼 요소를 가져옴
+
+            // 폼에서 입력된 제목과 저자를 가져와서 payload 객체 생성
             const payload = {
+                //폼 안의 <input name="title">와 <input name="author">에서 입력값을 가져와서 사용
                 title: form.title.value,
                 author: form.author.value
             };
 
+            // fetch API를 사용하여 POST 요청을 보내고, 서버에 책 정보를 추가
             fetch('/api/books', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(payload)
-            }).then(() => location.href = 'index.html');
+                headers: { 'Content-Type': 'application/json' }, // 요청 내용물이 JSON 형식임을 서버에 알림
+                body: JSON.stringify(payload) // JS객체 payload를 JSON 문자열로 변환하여 요청 본문에 담아 전송
+            }).then(() => location.href = 'index.html'); // 요청이 성공적으로 끝나면 실행, 등록 완료되면 자동으로 index.htmlfh dlehd
         };
     </script>
+
 </body>
+
 </html>

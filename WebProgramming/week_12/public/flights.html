@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Flights</title>
+</head>
+<body>
+  <h1>All Flights</h1>
+  <ul id="flights-list"></ul>  
+
+  <script>
+    fetch('/api/flights')
+      .then(res => res.json())
+      .then(flights => {
+        const ul = document.getElementById('flights-list');
+        flights.forEach(f => {
+          const li = document.createElement('li');
+          const a = document.createElement('a');
+          a.href = `/flight.html?id=${f.id}`;
+          a.textContent = `${f.origin} → ${f.destination} (${f.duration} min)`;
+          li.appendChild(a);
+          ul.appendChild(li);
+        });
+      })
+      .catch(err => {
+        console.error('Error loading flights:', err);
+        alert('Could not load flights.');
+      });
+  </script>
+</body>
+</html>

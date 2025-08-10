@@ -1,0 +1,17 @@
+{
+  "name": "unit_testing",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "node-test": "node --test \"node_test/*.test.js\"",
+    "jest-test": "jest",
+    "jest-test:coverage": "jest --coverage",
+    "node-test:coverage": "node --test --experimental-test-coverage \"node_test/*.test.js\""
+  },
+  "author": "jobregon",
+  "license": "MIT",
+  "description": "",
+  "devDependencies": {
+    "jest": "^29.7.0"
+  }
+}
